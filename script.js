@@ -85,23 +85,38 @@ $(document).ready(function () {
     }
   }
 
+  // This function changes our text string (5PM) to 24 hour number (17)
+  function convertTo24HourFormat(hourStr) {
+    var hourLength = hourStr.length;
+    var hourCrossover = "";
+    var tempHour = 0;
+    if (hourLength == 4) {  // means time is 2 digits 11,12
+      tempHour = hourStr.substr(0, 2);
+      hourCrossover = hourStr.substr(2,2);
+    } else if (hourLength == 3) {  //means time is 1 digit 9,2
+      tempHour = hourStr.substr(0, 1);
+      hourCrossover = hourStr.substr(1,2);
+    } else {
+      console.log("error in button click");
+    }
+
+    if ((hourCrossover =="PM") && (tempHour != 12)) {
+      tempHour = +tempHour + 12;
+      return(tempHour);
+    }
+    return(tempHour);
+  }
   // On a save button click:
   // get which hour was clicked
   // get new text in textarea
   // save in local storage
   $('.btn').click(function (e) {
     e.preventDefault();
-
     // get hour that we clicked on
-    var hour = this.previousElementSibling.previousElementSibling.innerText;
-    var hourLength = hour.length;
-    if (hourLength == 4) {  // means time is 2 digits 11,12
-      hour = hour.substr(0, 2);
-    } else if (hourLength == 3) {  //means time is 1 digit 9,2
-      hour = hour.substr(0, 1);
-    } else {
-      console.log("error in button click");
-    }
+    var hourStr = this.previousElementSibling.previousElementSibling.innerText;
+    var hour = convertTo24HourFormat(hourStr);
+
+    // convert hour to 24 hour clock format
 
     // get the data entered in textarea
     // store in local storage and update our tasksArr to "emulate" local storage
@@ -109,9 +124,6 @@ $(document).ready(function () {
     var index = hour - MIN_HOUR;  // 9am is index 0, 10AM index 1, etc...
 
     tasksArr[index] = $(divText).children('textarea').val();
-    console.log(tasksArr[index]);
-    console.log(index);
-    debugger;
     localStorage.setItem("taskList", JSON.stringify(tasksArr));
 
     // Turn on the Appointment Saved text
@@ -125,6 +137,7 @@ $(document).ready(function () {
 
   // Initialize local storage and tasksArr
   if (tasksLS == null) {
+    console.log("in tasksLS null");
     //initialize the local storage for the very first time running this app
     for (i=0; i<numberOfTasks; i++){
       tasksArr[i] = "";
