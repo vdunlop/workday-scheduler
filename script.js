@@ -29,11 +29,15 @@ $(document).ready(function () {
       var nextHour = dayjs().hour();
       var nextMinute = dayjs().minute();
       if (nextHour === currentHour) {
-        console.log("current hour = next hour!");
+        console.log("Error:current hour = next hour!");
         return;
       }
 
       // Change colors of tracker hour (past, present, future)
+      currentHour = nextHour; // update the global currentHour
+
+      setColorForTime(currentHour-1, past);
+      setColorForTime(currentHour,present);
 
       // Reset timer
       minutesUntilNextHour = NUM_MINUTES_IN_HOUR - nextMinute;
