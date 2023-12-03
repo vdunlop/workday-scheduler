@@ -13,7 +13,7 @@ var currentMinute = dayjs().minute();
 var minutesUntilNextHour = NUM_MINUTES_IN_HOUR - currentMinute;
 
 // Local storage set up.
-var tasksArr = ["", "", "", "", "", "", "", "", ""];  // array for tasks in each hour, 9 slots for 9 to 5 (9hours)
+var tasksArr = [];  // array for tasks in each hour, 9 slots for 9 to 5 (9hours)
 var numberOfTasks = 9;  // tasks for 9am to 5pm - 9 hours worth
 var tasksLS = JSON.parse(localStorage.getItem('taskList'));
 
@@ -109,6 +109,9 @@ $(document).ready(function () {
     var index = hour - MIN_HOUR;  // 9am is index 0, 10AM index 1, etc...
 
     tasksArr[index] = $(divText).children('textarea').val();
+    console.log(tasksArr[index]);
+    console.log(index);
+    debugger;
     localStorage.setItem("taskList", JSON.stringify(tasksArr));
 
     // Turn on the Appointment Saved text
@@ -123,6 +126,9 @@ $(document).ready(function () {
   // Initialize local storage and tasksArr
   if (tasksLS == null) {
     //initialize the local storage for the very first time running this app
+    for (i=0; i<numberOfTasks; i++){
+      tasksArr[i] = "";
+    }
     localStorage.setItem("taskList", JSON.stringify(tasksArr));
     tasksArr = JSON.parse(localStorage.getItem('taskList'));
   } else {
