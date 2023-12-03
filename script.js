@@ -14,7 +14,7 @@ var currentMinute = dayjs().minute();
 var minutesUntilNextHour = NUM_MINUTES_IN_HOUR - currentMinute;
 
 // Local storage set up.
-var tasksArr = ["a","s","d","f","g","h","j","k","l"];  // array for tasks in each hour, 9 slots for 9 to 5 (9hours)
+var tasksArr = ["a", "s", "d", "f", "g", "h", "j", "k", "l"];  // array for tasks in each hour, 9 slots for 9 to 5 (9hours)
 var numberOfTasks = 9;  // tasks for 9am to 5pm - 9 hours worth
 var tasksLS = JSON.parse(localStorage.getItem('taskList'));
 
@@ -45,22 +45,41 @@ $(document).ready(function () {
   };
 
   // Set background color for this hour to timeframe = past, present or future
-    function setColorForTime(hour,timeframe) {
-      var divText = "div#hour-" + hour;
-      $(divText).addClass(timeframe);
-    };
+  function setColorForTime(hour, timeframe) {
+    var divText = "div#hour-" + hour;
+    $(divText).addClass(timeframe);
+    console.log($(divText));
+  };
 
+  // Get task from local storage and set it in the timeframe's task content on the scheduler
+  function setTaskForTime(hour) {
+   // var divText = "div#hour-" + hour + ":nth-child(2)";
+ var divText = "div#hour-" + hour;
+
+    // Make sure the hour is in the range of valid hours before looking for its text in local storage
+    if ((hour >= MIN_HOUR) && (hour <= MAX_HOUR)) {
+      var index = hour - MIN_HOUR;
+  
+      debugger;
+      var divTextArea_Value = tasksArr[index];
+      //$('div#hour-9').children('textarea').val(divTextArea_Value);
+      $(divText).children('textarea').val(divTextArea_Value);
+    }
+  } 
   // Initialize scheduler with backgrounds appropriate for the current time.
   // Pull scheduler text out of local storage and add it to the hour entry.
   function initializeScheduler() {
-    for (i=MIN_HOUR; i<=MAX_HOUR; i++) {
-     if (i > currentHour) {
-      setColorForTime(i,CLASS_PAST_ATTR);
-     } else if (i === currentHour) {
-      setColorForTime(i, CLASS_PRESENT_ATTR);
-     } else if (i < currentHour) {
-      setColorForTime(i,CLASS_PAST_ATTR);
-     }
+    for (i = MIN_HOUR; i <= MAX_HOUR; i++) {
+      if (i > currentHour) {
+        setColorForTime(i, CLASS_PAST_ATTR);
+        setTaskForTime(i);
+      } else if (i === currentHour) {
+        setColorForTime(i, CLASS_PRESENT_ATTR);
+        setTaskForTime(i);
+      } else if (i < currentHour) {
+        setColorForTime(i, CLASS_PAST_ATTR);
+        setTaskForTime(i);
+      }
     }
   }
   // TODO: Add a listener for click events on the save button. This code should
@@ -96,12 +115,12 @@ $(document).ready(function () {
   console.log("current minute" + currentMinute);
   console.log("current hour" + currentHour);
   console.log("minutes until next hour" + minutesUntilNextHour);
-debugger;
+  //debugger;
   // Initialize local storage and tasksArr
   if (tasksLS == null) {
     console.log("tasksLS is null");
     //initialize the local storage for the very first time running this app
-    localStorage.setItem("taskList",JSON.stringify(tasksArr));
+    localStorage.setItem("taskList", JSON.stringify(tasksArr));
     tasksArr = JSON.parse(localStorage.getItem('taskList'));
   } else {
     //debugger;
@@ -110,18 +129,18 @@ debugger;
     tasksArr = JSON.parse(localStorage.getItem('taskList'));
     //console.log("tasksLS[0] = " + tasksLS[0]);
   }
-//debugger;
+  //debugger;
   // Display task list with proper colors:
   // grey = past
   // red = current hour
   // green = future
   //$('div#hour-9').attr("class",CLASS_FUTURE_ATTR);
-  
+
   //I pick these 2
   //$('div#hour-x').attr("id","hour-9");
   //$('div#hour-9').addClass(CLASS_FUTURE_ATTR);
 
-  debugger;
+  //debugger;
   initializeScheduler();
 
 });
