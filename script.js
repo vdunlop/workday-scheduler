@@ -36,8 +36,8 @@ $(document).ready(function () {
       // Change colors of tracker hour (past, present, future)
       currentHour = nextHour; // update the global currentHour
 
-      setColorForTime(currentHour-1, past);
-      setColorForTime(currentHour,present);
+      setColorForTime(currentHour - 1, CLASS_PAST_ATTR);
+      setColorForTime(currentHour, CLASS_PRESENT_ATTR);
 
       // Reset timer
       minutesUntilNextHour = NUM_MINUTES_IN_HOUR - nextMinute;
@@ -68,12 +68,14 @@ $(document).ready(function () {
       $(divText).children('textarea').val(divTextArea_Value);
     }
   }
+
   // Initialize scheduler with backgrounds appropriate for the current time.
   // Pull scheduler text out of local storage and add it to the hour entry.
   function initializeScheduler() {
+    debugger;
     for (i = MIN_HOUR; i <= MAX_HOUR; i++) {
       if (i > currentHour) {
-        setColorForTime(i, CLASS_PAST_ATTR);
+        setColorForTime(i, CLASS_FUTURE_ATTR);
         setTaskForTime(i);
       } else if (i === currentHour) {
         setColorForTime(i, CLASS_PRESENT_ATTR);
@@ -84,20 +86,40 @@ $(document).ready(function () {
       }
     }
   }
-  
-  $('.btn').click(function (e) {
-    preventDefault(e);
-    //debugger;
-    console.log(e.currentTarget);
-    console.log(this.parentElement);  //div id=hour-9
-    console.log(this.previousElementSibling);  // text area 
-    console.log(this.previousElementSibling.previousElementSibling); // time 9AM 
-    console.log(this.previousElementSibling.previousElementSibling.innerText); //9AM itself
 
-  });
-  //
-  
-  //
+  $('.btn').click(function (e) {
+    e.preventDefault();
+//    console.log(e.currentTarget);
+//    console.log(this.parentElement);  //div id=hour-9
+//    console.log(this.previousElementSibling);  // text area 
+//    console.log(this.previousElementSibling.previousElementSibling); // time 9AM 
+//    console.log(this.previousElementSibling.previousElementSibling.innerText); //9AM itself
+
+    // get hour that we clicked on
+    var hour = this.previousElementSibling.previousElementSibling.innerText;
+    var hourLength = hour.length;
+    if (hourLength == 4) {  // means time is 2 digits 11,12
+      hour = hour.substr(0, 2);
+    } else if (hourLength == 3) {  //means time is 1 digit 9,2
+      hour = hour.substr(0, 1);
+    } else {
+      console.log("error in button click");
+    }
+    
+    // get textarea
+    var divText = "div#hour-" + hour;
+    var index = hour - MIN_HOUR;  // 9am is index 0, 10AM index 1, etc...
+
+    // get the data entered in textarea
+    // store in local storage and update our tasksArr to "emulate" local storage
+    tasksArr[index] = $(divText).children('textarea').val();
+    console.log(divText,index,tasksArr);
+    localStorage.setItem("taskList", JSON.stringify(tasksArr));
+
+
+
+   });
+
   // Display the current date in the header of the page.
   var todayDate = dayjs();
   $('#currentDay').text(todayDate.format('dddd, MMMM D'));
@@ -105,7 +127,7 @@ $(document).ready(function () {
   console.log("current minute" + currentMinute);
   console.log("current hour" + currentHour);
   console.log("minutes until next hour" + minutesUntilNextHour);
-  //debugger;
+
   // Initialize local storage and tasksArr
   if (tasksLS == null) {
     console.log("tasksLS is null");
@@ -113,11 +135,9 @@ $(document).ready(function () {
     localStorage.setItem("taskList", JSON.stringify(tasksArr));
     tasksArr = JSON.parse(localStorage.getItem('taskList'));
   } else {
-    //debugger;
     console.log("tasksLS= " + tasksLS);
-    console.log("taskLS length" + tasksLS.length);
+    console.log("tasksLS length" + tasksLS.length);
     tasksArr = JSON.parse(localStorage.getItem('taskList'));
-    //console.log("tasksLS[0] = " + tasksLS[0]);
   }
 
   // Display task list with proper colors:
@@ -130,17 +150,17 @@ $(document).ready(function () {
 
 
 // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
+// block by comparing the id to the current hour. HINTS: How can the id
+// attribute of each time-block be used to conditionally add or remove the
+// past, present, and future classes? How can Day.js be used to get the
+// current hour in 24-hour time?
+//
+// TODO: Add code to get any user input that was saved in localStorage and set
+// the values of the corresponding textarea elements. HINT: How can the id
+// attribute of each time-block be used to do this?
 // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
+// use the id in the containing time-block as a key to save the user input in
+// local storage. HINT: What does `this` reference in the click listener
+// function? How can DOM traversal be used to get the "hour-x" id of the
+// time-block containing the button that was clicked? How might the id be
+// useful when saving the description in local storage?

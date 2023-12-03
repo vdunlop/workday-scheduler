@@ -28,15 +28,14 @@
       <h1 class="display-3">Work Day Scheduler</h1>
       <p class="lead">A simple calendar app for scheduling your work day</p>
       <p id="currentDay" class="lead"></p>
-      <p id="apptSaved">Appointment Saved in <span style="color: red">local storage</span></p>
+      <p id="apptSaved" style="display:none">Appointment Saved in <span style="color: red">local storage</span></p>
     </header>
     <div class="container-lg px-5">
       
       <!-- Containers with no background color and no text in textarea.
-        Color will be set according to the time and whether it is in the past,
-        present or future (set in js). textarea will be set from user input and user
-        input is stored in local storage so that a user can come back at any 
-        time and get their schedule (set in JS). -->
+        Color will be set according to the time and whether it is in the past,present or future (set in js). 
+        textarea will be set from user input and user input is stored in local storage so that a user 
+        can come back at any time and get their schedule (set in JS). -->
       <div id="hour-9" class="row time-block">
         <div class="col-2 col-md-1 hour text-center py-3">9AM</div>
         <textarea class="col-8 col-md-10 description" rows="3">This is it</textarea>
